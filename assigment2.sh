@@ -106,6 +106,7 @@ if ( !defined('ABSPATH') )
 require_once(ABSPATH . 'wp-settings.php');
 end
 cp wp-config.php /var/www/html/$dm/wordpress/.
+chown -R www-data.www-data /var/www/html/$dm/wordpress/
 rm wp-config.php
 rm wordpress2.sql
 rm grant.sql
