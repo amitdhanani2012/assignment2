@@ -12,6 +12,9 @@ grep -v "cgi.fix_path=0" /etc/php5/fpm/php.ini > /tmp/php.ini
 echo "cgi.fix_path=1" >> /tmp/php.ini
 cp -f /tmp/php.ini /etc/php5/fpm/php.ini
 rm -f /tmp/php.ini
+#sed 's/cgi.fix_path=0/cgi.fix_path=1/g' /etc/php5/fpm/pool.d/php.ini
+#sed 's/#cgi.fix_path=1/cgi.fix_path/g' /etc/php5/fpm/pool.d/php.ini
+
 grep -v "listen = 127.0.0.1:9000" /etc/php5/fpm/pool.d/www.conf > /tmp/www.conf
 echo "listen = /var/run/php5-fpm.sock" >> /tmp/www.conf
 cp -f /tmp/www.conf /etc/php5/fpm/www.conf
