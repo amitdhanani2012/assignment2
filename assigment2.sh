@@ -9,14 +9,18 @@ dpkg -l | grep -i mysql-server || apt-get --force-yes --fix-missing install mysq
 dpkg -l | grep -i php5-mysql || apt-get --force-yes --fix-missing install php5-mysql
 mysql_install_db
 dpkg -l | grep -i nginx || $(apt-get remove --force-yes nginx;apt-get --force-yes --fix-missing install  nginx )
-grep -v "cgi.fix_path=0" /etc/php5/fpm/php.ini > /tmp/php.ini
-echo "cgi.fix_path=1" >> /tmp/php.ini
-cp -f /tmp/php.ini /etc/php5/fpm/php.ini
-rm -f /tmp/php.ini
-grep -v "listen = 127.0.0.1:9000" /etc/php5/fpm/pool.d/www.conf > /tmp/www.conf
-echo "listen = /var/run/php5-fpm.sock" >> /tmp/www.conf
-cp -f /tmp/www.conf /etc/php5/fpm/www.conf
-rm /tmp/www.conf
+sed -i 's/cgi.fix_path=0/cgi.fix_path=1/g' /etc/php5/fpm/php.ini
+#grep -v "cgi.fix_path=0" /etc/php5/fpm/php.ini > /tmp/php.ini
+#echo "cgi.fix_path=1" >> /tmp/php.ini
+echo "cgi.fix_path=1" >> /etc/php5/fpm/php.ini
+#cp -f /tmp/php.ini /etc/php5/fpm/php.ini
+#rm -f /tmp/php.ini
+sed -i 's/listen = 127.0.0.1:9000/listen = /var/run/php5-fpm.sock/g' /etc/php5/fpm/pool.d/www.conf
+#grep -v "listen = 127.0.0.1:9000" /etc/php5/fpm/pool.d/www.conf > /tmp/www.conf
+#echo "listen = /var/run/php5-fpm.sock" >> /tmp/www.conf
+echo "listen = /var/run/php5-fpm.sock" >> /etc/php5/fpm/pool.d/www.conf
+#cp -f /tmp/www.conf /etc/php5/fpm/www.conf
+#rm /tmp/www.conf
 ################# domain for nginx and /etc/hosts entry###############
 echo " Please enter domain name : "
 read dm
