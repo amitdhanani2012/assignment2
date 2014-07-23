@@ -6,19 +6,19 @@ echo "Require Root Login"
 fi
 #sudo add-apt-repository ppa:ondrej/php5
 echo "http://ppa.launchpad.net/ondrej/php5/ubuntu precise main">> /etc/apt/source.list
-apt-get update 
-dpkg -l | grep -i php5-fpm || apt-get --force-yes --fix-missing install php5-fpm
-dpkg -l | grep -i mysql-server || apt-get --force-yes --fix-missing install mysql-server
-dpkg -l | grep -i php5-mysql || apt-get --force-yes --fix-missing install php5-mysql
-mysql_install_db
-dpkg -l | grep -i nginx || $(apt-get remove --force-yes nginx;apt-get --force-yes --fix-missing install  nginx )
+apt-get update >/dev/null &2>1 
+dpkg -l | grep -i php5-fpm > /dev/null &2>1|| apt-get --force-yes --fix-missing install php5-fpm
+dpkg -l | grep -i mysql-server > /dev/null &2>1 || apt-get --force-yes --fix-missing install mysql-server
+dpkg -l | grep -i php5-mysql >/dev/null &2> 1|| apt-get --force-yes --fix-missing install php5-mysql
+mysql_install_db > /dev/null &2>1
+dpkg -l | grep -i nginx >/dev/null &2>1 ||  nginx;apt-get --force-yes --fix-missing install  nginx 
 sed -i 's/cgi.fix_path=0/cgi.fix_path=1/g' /etc/php5/fpm/php.ini
 #grep -v "cgi.fix_path=0" /etc/php5/fpm/php.ini > /tmp/php.ini
 #echo "cgi.fix_path=1" >> /tmp/php.ini
 echo "cgi.fix_path=1" >> /etc/php5/fpm/php.ini
 #cp -f /tmp/php.ini /etc/php5/fpm/php.ini
 #rm -f /tmp/php.ini
-sed -i 's/listen = 127.0.0.1:9000/listen = /var/run/php5-fpm.sock/g' /etc/php5/fpm/pool.d/www.conf
+sed -i 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php5-fpm.sock/g' /etc/php5/fpm/pool.d/www.conf
 #grep -v "listen = 127.0.0.1:9000" /etc/php5/fpm/pool.d/www.conf > /tmp/www.conf
 #echo "listen = /var/run/php5-fpm.sock" >> /tmp/www.conf
 echo "listen = /var/run/php5-fpm.sock" >> /etc/php5/fpm/pool.d/www.conf
@@ -31,8 +31,9 @@ echo "Please enter IP for given domain name: "
 read ip
 
 echo "$ip $dm">> /etc/hosts
-grep -v "bind-address" /etc/mysql/my.cnf > /tmp/my.cnf
-cp /tmp/my.cnf /etc/mysql/my.cnf
+#grep -v "bind-address" /etc/mysql/my.cnf > /tmp/my.cnf
+sed -i '/bind-address/d' /etc/mysql/my.cnf
+#cp /tmp/my.cnf /etc/mysql/my.cnf
 service mysql restart
 touch /etc/nginx/sites-available/$dm
 ln -s /etc/nginx/sites-available/$dm /etc/nginx/sites-enabled/$dm
