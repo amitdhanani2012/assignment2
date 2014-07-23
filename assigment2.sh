@@ -2,6 +2,7 @@
 echo "Pre-requiste is this script should run as root. If you are root user then please enter to continue"
 read rt
 #sudo add-apt-repository ppa:ondrej/php5
+echo "http://ppa.launchpad.net/ondrej/php5/ubuntu precise main">> /etc/apt/source.list
 apt-get update 
 dpkg -l | grep -i php5-fpm || apt-get --force-yes --fix-missing install php5-fpm
 dpkg -l | grep -i mysql-server || apt-get --force-yes --fix-missing install mysql-server
