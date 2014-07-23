@@ -3,6 +3,7 @@
 #read rt
 if [ `id -u ` -ne 0 ] ;then
 echo "Require Root Login"
+exit 0
 fi
 #sudo add-apt-repository ppa:ondrej/php5
 echo "http://ppa.launchpad.net/ondrej/php5/ubuntu precise main">> /etc/apt/source.list
