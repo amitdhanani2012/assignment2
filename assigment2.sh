@@ -1,6 +1,9 @@
 #!/bin/bash
-echo "Pre-requiste is this script should run as root. If you are root user then please enter to continue"
-read rt
+#echo "Pre-requiste is this script should run as root. If you are root user then please enter to continue"
+#read rt
+if [ `id -u ` -ne 0 ] ;then
+echo "Require Root Login"
+fi
 #sudo add-apt-repository ppa:ondrej/php5
 echo "http://ppa.launchpad.net/ondrej/php5/ubuntu precise main">> /etc/apt/source.list
 apt-get update 
