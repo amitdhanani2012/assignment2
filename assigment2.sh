@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Pre-requiste is this script should run as root. If you are root user then please enter to continue"
 read rt
-sudo add-apt-repository ppa:ondrej/php5
+#sudo add-apt-repository ppa:ondrej/php5
 apt-get update 
 dpkg -l | grep -i php5-fpm || apt-get --force-yes --fix-missing install php5-fpm
 dpkg -l | grep -i mysql-server || apt-get --force-yes --fix-missing install mysql-server
@@ -12,9 +12,6 @@ grep -v "cgi.fix_path=0" /etc/php5/fpm/php.ini > /tmp/php.ini
 echo "cgi.fix_path=1" >> /tmp/php.ini
 cp -f /tmp/php.ini /etc/php5/fpm/php.ini
 rm -f /tmp/php.ini
-#sed 's/cgi.fix_path=0/cgi.fix_path=1/g' /etc/php5/fpm/pool.d/php.ini
-#sed 's/#cgi.fix_path=1/cgi.fix_path/g' /etc/php5/fpm/pool.d/php.ini
-
 grep -v "listen = 127.0.0.1:9000" /etc/php5/fpm/pool.d/www.conf > /tmp/www.conf
 echo "listen = /var/run/php5-fpm.sock" >> /tmp/www.conf
 cp -f /tmp/www.conf /etc/php5/fpm/www.conf
@@ -67,6 +64,7 @@ rm latest.tar.gz
 wget https://wordpress.org/latest.tar.gz 
 tar -xzvf latest.tar.gz
 cd -
+
 echo "Enter username for wordpress "
 read ur
 echo " Enter password for wordpress user $ur"
@@ -79,6 +77,9 @@ echo "Enter username of mysql server"
 read u
 echo "Enter password of mysql server"
 read p
+sed -i 's/example.com/'$dm'/g' wordpress.sql
+sed -i 's/mail.example.com/'$dm'/g' wordpress.sql
+sed -i 's/login@example.com/login@'$dm'/g' wordpress.sql
 cat > grant.sql<<end
 use mysql;
 create user 'wordpress'@'$dm' identified by '$dps';
@@ -90,15 +91,16 @@ year=`date +%Y`
 month=`date +%m`
 day=`date +%d`
 time=`date +%H:%M:%S`
-
-cat > /tmp/wordpress2.sql<<end
+rm wordpress.sql
+cp wordpress.org.sql wordpress.sql
+cat > /tmp/wordpress2.sql << wpr
 use wordpress;
 delete  from wp_users;
-insert into wp_users values('','$ur',password('$ps'),'$ur','$email','',' '$year-$month-$day $time','',0,'$ur');
-end 
+insert into wp_users values(1,'$ur',MD5('$ps'),'$ur','$email','','$year-$month-$day $time','',0,'$ur');
+wpr
 mysql --host=$dm -u wordpress -p$dps  < /tmp/wordpress2.sql
-touch /tmp/wp-config.php
-sudo cat > /tmp/wp-config.php<<end
+
+cat > /tmp/wp-config.php << wp
 <?php
 define('DB_NAME', 'wordpress');
 define('DB_USER', 'wordpress');
@@ -120,9 +122,9 @@ define('WP_DEBUG', false);
 if ( !defined('ABSPATH') )
         define('ABSPATH', dirname(__FILE__) . '/');
 require_once(ABSPATH . 'wp-settings.php');
-end
+wp
 
-sudo cp /tmp/wp-config.php /var/www/html/$dm/wordpress/.
+cp /tmp/wp-config.php /var/www/html/$dm/wordpress/.
 chown -R www-data.www-data /var/www/html/$dm/wordpress/
 rm /tmp/wp-config.php
 rm /tmp/wordpress2.sql
