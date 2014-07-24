@@ -14,6 +14,7 @@ sed -i 's/cgi.fix_path=0/cgi.fix_path=1/g' /etc/php5/fpm/php.ini
 echo "cgi.fix_path=1" >> /etc/php5/fpm/php.ini
 sed -i 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php5-fpm.sock/g' /etc/php5/fpm/pool.d/www.conf
 echo "listen = /var/run/php5-fpm.sock" >> /etc/php5/fpm/pool.d/www.conf
+service php5-fpm restart
 echo " Please enter domain name : "
 read dm
 echo "Please enter IP for given domain name: "
