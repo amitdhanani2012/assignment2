@@ -119,7 +119,8 @@ echo "\$table_prefix  = 'wp_';" >> /tmp/wp-config.php
 echo "define('WPLANG', '');" >> /tmp/wp-config.php
 echo "define('WP_DEBUG', false);" >> /tmp/wp-config.php
 echo "if ( !defined('ABSPATH') )" >> /tmp/wp-config.php
-echo "        define('ABSPATH', dirname(__FILE__) . '/');" >> /tmp/wp-config.phpecho " require_once(ABSPATH . 'wp-settings.php');" >> /tmp/wp-config.php
+echo "        define('ABSPATH', dirname(__FILE__) . '/');" >> /tmp/wp-config.php
+echo " require_once(ABSPATH . 'wp-settings.php');" >> /tmp/wp-config.php
 
 rm index.html
 
