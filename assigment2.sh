@@ -18,7 +18,11 @@ echo " Please enter domain name : "
 read dm
 echo "Please enter IP for given domain name: "
 read ip
-echo "$ip $dm">> /etc/hosts
+grep -i $dm /etc/hosts || echo "$ip $dm">> /etc/hosts
+if [ -s /etc/nginx/sites-available/$dm ];then 
+echo "site already exists"
+exit 0
+fi
 ###to allow mysql to listen on all ips #################
 sed -i '/bind-address/d' /etc/mysql/my.cnf
 service mysql restart
