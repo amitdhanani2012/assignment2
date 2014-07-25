@@ -6,11 +6,10 @@ exit 0
 fi
 echo "http://ppa.launchpad.net/ondrej/php5/ubuntu precise main">> /etc/apt/source.list
 apt-get update >/dev/null 2>&1 
-dpkg -l | grep -i php5-fpm > /dev/null 2>&1|| apt-get --force-yes --fix-missing install php5-fpm
-dpkg -l | grep -i mysql-server > /dev/null 2>&1 || apt-get --force-yes --fix-missing install mysql-server
-dpkg -l | grep -i php5-mysql >/dev/null 2>&1|| apt-get --force-yes --fix-missing install php5-mysql
-mysql_install_db > /dev/null 2>&1
-dpkg -l | grep -i nginx >/dev/null 2>&1 ||  nginx;apt-get --force-yes --fix-missing install  nginx 
+dpkg -l | grep -i php5-fpm > /dev/null 2>&1|| apt-get --force-yes -y  --fix-missing install php5-fpm
+dpkg -l | grep -i mysql-server > /dev/null 2>&1 || apt-get --force-yes -y  --fix-missing install mysql-server
+dpkg -l | grep -i php5-mysql >/dev/null 2>&1|| apt-get --force-yes -y --fix-missing install php5-mysql
+dpkg -l | grep -i nginx-full >/dev/null 2>&1 ||  apt-get --force-yes -y --fix-missing install  nginx-full 
 sed -i 's/cgi.fix_path=0/cgi.fix_path=1/g' /etc/php5/fpm/php.ini
 echo "cgi.fix_path=1" >> /etc/php5/fpm/php.ini
 sed -i 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php5-fpm.sock/g' /etc/php5/fpm/pool.d/www.conf
