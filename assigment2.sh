@@ -1,4 +1,5 @@
 #!/bin/bash
+
 if [ `id -u ` -ne 0 ] ;then
 echo "Require Root Login"
 exit 0
@@ -19,18 +20,20 @@ echo " Please enter domain name : "
 read dm
 echo "Please enter IP for given domain name: "
 read ip
-grep -i $dm /etc/hosts || echo "$ip $dm">> /etc/hosts
+grep $dm /etc/hosts >/dev/null 2>&1 || echo "$ip $dm">> /etc/hosts
+
 if [ -s /etc/nginx/sites-available/$dm ];then 
 echo "site already exists"
 exit 0
 fi
-###to allow mysql to listen on all ips #################
-sed -i '/bind-address/d' /etc/mysql/my.cnf
 service mysql restart
 touch /etc/nginx/sites-available/$dm
 ln -s /etc/nginx/sites-available/$dm /etc/nginx/sites-enabled/$dm
+if [ -d /var/www/html/$dm/wordpress ];then
+echo "wordpress content already exist"
+exit 0
+fi
 mkdir -p /var/www/html/$dm/wordpress
-chown www-data.www-data /var/www/html/$dm/wordpress/
 cat > /tmp/domain-file<<end
 server {
 	listen $ip:80;
@@ -87,11 +90,11 @@ sed -i 's/login@example.com/login@'$dm'/g' wordpress.sql
 sed -i 's/wordpress/'$wps'/g' wordpress.sql
 cat > grant.sql<<end
 use mysql;
-create user '$urwps'@'$dm' identified by '$dps';
-grant all on $wps.* to '$urwps'@'$dm';
+create user '$urwps'@'localhost' identified by '$dps';
+grant all on $wps.* to '$urwps'@'localhost';
 end
 mysql -u $u -p$p < grant.sql 
-mysql --host=$dm -u $wps  -p$dps < wordpress.sql
+mysql --host=localhost -u $wps  -p$dps < wordpress.sql
 year=`date +%Y`
 month=`date +%m`
 day=`date +%d`
@@ -103,14 +106,14 @@ use $wps;
 delete  from wp_users;
 insert into wp_users values(1,'$ur',MD5('$ps'),'$ur','$email','','$year-$month-$day $time','',0,'$ur');
 wpr1
-mysql --host=$dm -u $urwps -p$dps  < /tmp/wordpress2.sql
+mysql --host=localhost -u $urwps -p$dps  < /tmp/wordpress2.sql
 
 cat > /tmp/wp-config.php << wpp1
 <?php
 define('DB_NAME', '$wps');
 define('DB_USER', '$urwps');
 define('DB_PASSWORD', '$dps');
-define('DB_HOST', '$dm');
+define('DB_HOST', 'localhost');
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 wpp1
