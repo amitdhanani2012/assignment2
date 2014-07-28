@@ -3,7 +3,7 @@
 if [ `id -u ` -ne 0 ] ;then
 echo "Require Root Login"
 exit 0
-
+fi
 echo "http://ppa.launchpad.net/ondrej/php5/ubuntu precise main">> /etc/apt/source.list
 apt-get update >/dev/null 2>&1 
 apt-get --force-yes -y  --fix-missing install php5-fpm >/dev/nulll 2>&1
